@@ -4,6 +4,18 @@ function getArticleTitle() {
   return titleElement ? titleElement.innerText.trim() : '未命名文章';
 }
 
+// 获取文章作者
+function getArticleAuthor() {
+  const authorElement = document.getElementById('js_name');
+  return authorElement ? authorElement.innerText.trim() : '未知作者';
+}
+
+// 获取发布时间
+function getPublishTime() {
+  const timeElement = document.getElementById('publish_time');
+  return timeElement ? timeElement.innerText.trim() : '';
+}
+
 // 获取文章正文内容
 function getArticleContent() {
   const article = document.getElementById('js_content');
@@ -30,8 +42,35 @@ function getArticleContent() {
     }
   });
 
+  // 获取作者和发布时间信息
+  const author = getArticleAuthor();
+  const publishTime = getPublishTime();
+  
+  // 创建包含元信息的头部
+  const metaHeader = document.createElement('div');
+  metaHeader.style.marginBottom = '20px';
+  metaHeader.style.paddingBottom = '10px';
+  metaHeader.style.borderBottom = '1px solid #eee';
+  metaHeader.innerHTML = `
+    <h1>${getArticleTitle()}</h1>
+    <div style="color: #666; font-size: 14px; margin-top: 10px;">
+      <span>作者: ${author}</span>
+      ${publishTime ? `<span style="margin-left: 15px;">发布时间: ${publishTime}</span>` : ''}
+    </div>
+  `;
+
+  // 创建一个容器来包裹头部和文章内容
+  const container = document.createElement('div');
+  container.style.maxWidth = '677px';
+  container.style.margin = '0 auto';
+  container.style.padding = '0 20px';
+  container.style.boxSizing = 'border-box';
+  
+  container.appendChild(metaHeader);
+  container.appendChild(clonedArticle);
+
   // 获取完整的HTML内容
-  const content = clonedArticle.innerHTML;
+  const content = container.innerHTML;
   
   return {
     html: content,
