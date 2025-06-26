@@ -20,9 +20,8 @@
   },
   "permissions": [
     "activeTab",
-    "scripting",
-    "downloads",
-    "downloads.onDeterminingFilename"
+    "scripting", 
+    "downloads"
   ],
   "host_permissions": ["https://mp.weixin.qq.com/*"],
   "background": {
@@ -34,7 +33,6 @@
   }],
   "author": "Ayoung",
   "homepage_url": "https://github.com/Bor-Yau/weixinPage-dowload",
-  "minimum_edge_version": "88.0.0.0",
   "offline_enabled": true,
   "short_name": "微信文章保存器"
 }

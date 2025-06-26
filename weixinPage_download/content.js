@@ -4,6 +4,33 @@ function getArticleTitle() {
   return titleElement ? titleElement.innerText.trim() : '未命名文章';
 }
 
+// 获取文章作者
+function getArticleAuthor() {
+  const authorElement = document.getElementById('js_name');
+  return authorElement ? authorElement.innerText.trim() : '未知作者';
+}
+
+// 获取发布时间
+function getPublishTime() {
+  const timeElement = document.getElementById('publish_time');
+  return timeElement ? timeElement.innerText.trim() : '';
+}
+
+
+// 获取发布时间并格式化为YYYY-MM-DD
+function getFormattedDate() {
+  const timeElement = document.getElementById('publish_time');
+  if (!timeElement) return '';
+  
+  const timeText = timeElement.innerText.trim();
+  // 匹配中文日期格式，如"2025年04月18日 07:44"
+  const match = timeText.match(/(\d{4})年(\d{2})月(\d{2})日/);
+  if (!match) return '';
+  
+  // 返回YYYY-MM-DD格式
+  return `${match[1]}-${match[2]}-${match[3]}`;
+}
+
 // 获取文章正文内容
 function getArticleContent() {
   const article = document.getElementById('js_content');
@@ -30,13 +57,48 @@ function getArticleContent() {
     }
   });
 
-  // 获取完整的HTML内容
-  const content = clonedArticle.innerHTML;
+  // 获取作者和发布时间信息
+  const author = getArticleAuthor();
+  const publishTime = getPublishTime();
+  
+  // 创建包含元信息的头部
+  const metaHeader = document.createElement('div');
+  metaHeader.style.marginBottom = '20px';
+  metaHeader.style.paddingBottom = '10px';
+  metaHeader.style.borderBottom = '1px solid #eee';
+  metaHeader.innerHTML = `
+    <h1>${getArticleTitle()}</h1>
+    <div style="color: #666; font-size: 14px; margin-top: 10px;">
+      <span>${author}</span>
+      ${publishTime ? `<span style="margin-left: 15px;">发布时间: ${publishTime}</span>` : ''}
+    </div>
+  `;
+
+  // 创建一个容器来包裹头部和文章内容
+  const container = document.createElement('div');
+  container.appendChild(metaHeader);
+  container.appendChild(clonedArticle);
+
+  // 获取完整的HTML内容，包括容器本身
+  const content = `
+    <style>
+      .article-container {
+        max-width: 677px;
+        margin: 0 auto;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+    </style>
+    <div class="article-container">
+      ${container.innerHTML}
+    </div>
+  `;
   
   return {
     html: content,
     images: imageUrls,
-    title: getArticleTitle()
+    title: getArticleTitle(),
+    date: getFormattedDate()
   };
 }
 
@@ -56,8 +118,9 @@ function saveArticle() {
       action: 'saveArticle',
       content: content.html,
       images: content.images,
-      title: content.title
-    }, (response) => {
+      title: content.title,
+      date: content.date
+    }, () => {
       // 恢复按钮状态
       button.disabled = false;
       button.textContent = '保存文章';
